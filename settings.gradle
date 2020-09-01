@@ -1,0 +1,6 @@
+rootProject.name = 'SecondHandTrading'
+include 'PublicInterfaces'
+include 'AvatarUploadMS'
+include 'AvatarUploadProvider'
+include 'BuckeyeTrade'
+

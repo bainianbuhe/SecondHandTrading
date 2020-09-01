@@ -1,0 +1,14 @@
+dubbo:
+    application:
+      name: buckeyetrade-consumer
+    registry:
+      address: zookeeper://47.90.245.180:2181
+    consumer:
+      timeout: 3000
+server:
+  port: 8079
+fileUpload:
+  avatar:
+    pathPattern: /static/avatars/**
+    resourceLocation: /usr/local/pic/avatars/
+
