@@ -1,11 +1,12 @@
 package com.hygg.service.impl;
 import com.alibaba.dubbo.config.annotation.Service;
+import com.hygg.utils.StreamOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import service.AvatarUploadService;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.File;
+import com.hygg.service.AvatarUploadService;
+
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 @Service(protocol = "hessian")
@@ -15,16 +16,9 @@ public class AvatarUploadServiceImpl implements AvatarUploadService {
     @Value("${myServer.address}")
     String currentServerAddress;
     @Override
-    public Map<String, Object> upload(MultipartFile file) {
+    public Map<String, Object> upload(InputStream inputStream) {
         Logger logger = LoggerFactory.getLogger(AvatarUploadServiceImpl.class);
         logger.info("AvatarUploadService");
-        if (file.isEmpty()) return new HashMap<String,Object>() {
-            {
-                put("success",false);
-                put("message","empty file");
-            }
-        };
-        logger.info("begin serializing!");
         try{
             /*
             byte[] uploadBytes = file.getBytes();
@@ -33,7 +27,9 @@ public class AvatarUploadServiceImpl implements AvatarUploadService {
             String hashString = new BigInteger(1, digest).toString(16);
             file.transferTo(new File(resourceLocation+hashString));
              */
-            file.transferTo(new File(resourceLocation+"hashString"));
+            StreamOperation.writeToLocal(resourceLocation+"asdasd",inputStream);
+
+
         }
         catch(Exception e){
             logger.error("error!");
@@ -53,5 +49,6 @@ public class AvatarUploadServiceImpl implements AvatarUploadService {
             }
         };
     }
+
 }
 

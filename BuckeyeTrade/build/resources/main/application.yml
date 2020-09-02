@@ -4,7 +4,7 @@ dubbo:
     registry:
       address: zookeeper://47.90.245.180:2181
     consumer:
-      timeout: 3000
+      timeout: 10000
 server:
   port: 8079
 fileUpload:

@@ -1,9 +1,3 @@
-spring:
-  servlet:
-    multipart:
-      enabled: true
-    max-file-size: 5242880
-    max-request-size: 20MB
 fileUpload:
   avatar:
     pathPattern: /static/avatars/**
@@ -14,12 +8,14 @@ myServer:
   address: 47.90.245.180
 dubbo:
   application:
-    name: avatarupload-provider1
+    name: avatarupload-provider1-1.0.0a
   registry:
     address: zookeeper://47.90.245.180:2181
   protocol:
-    name: dubbo
-    port: 20880
+    name: hessian
+    port: 20881
+    server: jetty
   provider:
-    timeout: 3
+    timeout: 10000
+    version: 1.0.0
 
