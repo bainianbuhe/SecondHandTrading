@@ -1,12 +1,5 @@
-spring:
-  servlet:
-    multipart:
-      enabled: true
-    max-file-size: 5242880
-    max-request-size: 20MB
 fileUpload:
   avatar:
-    pathPattern: /static/avatars/**
     resourceLocation: /usr/local/pic/avatars/
 server:
   port: 8081
@@ -14,9 +7,12 @@ myServer:
   address: 47.90.250.152
 dubbo:
   application:
-    name: avatarupload-provider2
+    name: avatarupload-provider1.0
   registry:
     address: zookeeper://47.90.245.180:2181
   protocol:
     name: dubbo
-    port: -1
+    port: 20880
+  provider:
+    timeout: 3
+

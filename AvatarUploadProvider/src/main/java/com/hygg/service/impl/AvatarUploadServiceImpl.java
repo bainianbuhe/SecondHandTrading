@@ -1,57 +1,83 @@
 package com.hygg.service.impl;
-import com.alibaba.dubbo.config.annotation.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Value;
-import service.AvatarUploadService;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.File;
+import com.hygg.service.AvatarUploadService;
+import org.springframework.context.annotation.PropertySource;
+
+import java.io.*;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
-@Service(protocol = "hessian")
+@Service
+@PropertySource(value = {"classpath:application2.yml"})
 public class AvatarUploadServiceImpl implements AvatarUploadService {
     @Value("${fileUpload.avatar.resourceLocation}")
     String resourceLocation;
     @Value("${myServer.address}")
     String currentServerAddress;
     @Override
-    public Map<String, Object> upload(MultipartFile file) {
-        Logger logger = LoggerFactory.getLogger(AvatarUploadServiceImpl.class);
-        logger.info("AvatarUploadService");
-        if (file.isEmpty()) return new HashMap<String,Object>() {
+    public Map<String, Object> upload(byte[] fileByteArray,String fileType) {
+        String fileName="";
+        if (fileByteArray.length==0) return new HashMap<String,Object>() {
             {
                 put("success",false);
                 put("message","empty file");
             }
         };
-        logger.info("begin serializing!");
         try{
-            /*
-            byte[] uploadBytes = file.getBytes();
+
             MessageDigest md5 = MessageDigest.getInstance("MD5");
-            byte[] digest = md5.digest(uploadBytes);
+            byte[] digest = md5.digest(fileByteArray);
             String hashString = new BigInteger(1, digest).toString(16);
-            file.transferTo(new File(resourceLocation+hashString));
-             */
-            file.transferTo(new File(resourceLocation+"hashString"));
+            fileName=resourceLocation+hashString+"."+fileType;
+            readBin2Image(fileByteArray,fileName);
+
         }
         catch(Exception e){
-            logger.error("error!");
             e.printStackTrace();
             return new HashMap<String,Object>() {
                 {
                     put("success",false);
-                    put("message","failure");
                 }
             };
         }
+        String finalFileName = fileName;
         return new HashMap<String,Object>() {
             {
                 put("success",true);
-                put("message","success");
-                put("serverAddress",currentServerAddress);
+                put("imgUrl",currentServerAddress+ finalFileName);
             }
         };
     }
+    private static void readBin2Image(byte[] byteArray, String targetPath) {
+        InputStream in = new ByteArrayInputStream(byteArray);
+        File file = new File(targetPath);
+        String path = targetPath.substring(0, targetPath.lastIndexOf("/"));
+        if (!file.exists()) {
+            new File(path).mkdir();
+        }
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file);
+            int len = 0;
+            byte[] buf = new byte[1024];
+            while ((len = in.read(buf)) != -1) {
+                fos.write(buf, 0, len);
+            }
+            fos.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (null != fos) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 }
 

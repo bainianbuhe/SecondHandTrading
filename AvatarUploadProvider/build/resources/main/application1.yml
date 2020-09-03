@@ -1,0 +1,18 @@
+fileUpload:
+  avatar:
+    resourceLocation: /usr/local/pic/avatars/
+server:
+  port: 8081
+myServer:
+  address: 47.90.245.180
+dubbo:
+  application:
+    name: avatarupload-provider1.0
+  registry:
+    address: zookeeper://47.90.245.180:2181
+  protocol:
+    name: dubbo
+    port: 20880
+  provider:
+    timeout: 3
+
