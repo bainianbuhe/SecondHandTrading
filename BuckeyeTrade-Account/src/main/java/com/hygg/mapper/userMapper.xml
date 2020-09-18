@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hygg.dao.UserDao">
+    <select id="queryUserByNameAndPass"  resultType="user">
+        select user_id  ,user_name,user_password, college_or_school, avatar_url
+           from buckeyetrade_user where user_password=#{userPassword} and user_name=#{userName}
+    </select>
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="userId">
+insert into buckeyetrade_user(user_name,user_password,college_or_school, avatar_url)
+values(#{userName},#{userPassword},#{collegeOrSchool},#{avatarUrl})
+
+    </insert>
+    <select id="queryUserByName" resultType="user">
+        select user_id  ,user_name,user_password, college_or_school, avatar_url
+           from buckeyetrade_user where user_name=#{userName}
+    </select>
+
+</mapper>

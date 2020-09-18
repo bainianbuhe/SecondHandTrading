@@ -12,5 +12,5 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation project(":PublicInterfaces")
-    implementation("com.caucho:hessian:4.0.7")
+    implementation('org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.3')
 }

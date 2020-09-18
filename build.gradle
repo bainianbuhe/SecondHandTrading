@@ -34,7 +34,7 @@ allprojects {
         compileOnly("org.springframework.boot:spring-boot-devtools")
         testCompile 'org.springframework.boot:spring-boot-starter-test'
         testCompile group: 'junit', name: 'junit', version: '4.12'
-        implementation( group: 'org.apache.dubbo', name: 'dubbo', version: '2.7.6')
+        implementation( group: 'org.apache.dubbo', name: 'dubbo', version: '2.7.4.1')
         implementation('org.apache.curator:curator-framework:2.12.0')
         implementation( 'org.apache.curator:curator-recipes:2.8.0')
         implementation(group: 'org.apache.zookeeper', name: 'zookeeper', version: '3.4.6')
@@ -47,8 +47,12 @@ allprojects {
             exclude group: 'org.slf4j', module: 'slf4j-log4j12'
         }
         implementation("commons-fileupload:commons-fileupload:1.2.1")
+        dependencies {
+            testImplementation(group: 'junit', name: 'junit', version: '4.12')
+        }
 
 
+        sourceSets.main.resources.srcDirs = ["src/main/java","src/main/resources"]
 
 
     }

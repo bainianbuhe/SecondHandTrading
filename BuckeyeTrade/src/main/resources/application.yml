@@ -7,8 +7,4 @@ dubbo:
       timeout: 3000
 server:
   port: 8079
-fileUpload:
-  avatar:
-    pathPattern: /static/avatars/**
-    resourceLocation: /usr/local/pic/avatars/
 

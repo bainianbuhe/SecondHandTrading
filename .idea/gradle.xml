@@ -12,7 +12,17 @@
             <option value="$PROJECT_DIR$/AvatarUploadMS" />
             <option value="$PROJECT_DIR$/AvatarUploadProvider" />
             <option value="$PROJECT_DIR$/BuckeyeTrade" />
+            <option value="$PROJECT_DIR$/BuckeyeTrade-Account" />
             <option value="$PROJECT_DIR$/PublicInterfaces" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="D:/WorkSpaces/IdeaWorkSpace/BuckeyeTrade-User" />
+        <option name="modules">
+          <set>
+            <option value="D:/WorkSpaces/IdeaWorkSpace/BuckeyeTrade-User" />
           </set>
         </option>
       </GradleProjectSettings>
