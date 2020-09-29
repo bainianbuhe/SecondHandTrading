@@ -4,4 +4,6 @@ include 'AvatarUploadMS'
 include 'AvatarUploadProvider'
 include 'BuckeyeTrade'
 include 'BuckeyeTrade-Account'
+include 'MyBaTisGenerator'
+include 'BuckeyeTrade-Post'
 

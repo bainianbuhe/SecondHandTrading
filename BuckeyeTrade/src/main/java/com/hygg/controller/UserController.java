@@ -34,6 +34,7 @@ public class UserController {
             e.printStackTrace();
         }
         return new HashMap<String,Object>(){{
+            put("result","failure");
             put("message","failed to get bytes");
         }};
     }

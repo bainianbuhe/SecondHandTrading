@@ -41,7 +41,7 @@ public class AvatarUploadServiceImpl implements AvatarUploadService {
             e.printStackTrace();
             return new HashMap<String,Object>() {
                 {
-                    put("success",false);
+                    put("result","success");
                     put("message",e.toString());
                 }
             };
@@ -49,7 +49,7 @@ public class AvatarUploadServiceImpl implements AvatarUploadService {
         String finalFileName = fileName;
         return new HashMap<String,Object>() {
             {
-                put("success",true);
+                put("result","success");
                 put("imgUrl",currentServerAddress+"/static/avatars/"+finalFileName);
             }
         };

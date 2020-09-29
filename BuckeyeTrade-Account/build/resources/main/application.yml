@@ -16,6 +16,8 @@ mybatis:
   configuration:
     mapUnderscoreToCamelCase: true
 fileUpload:
+  post:
+    resourceLocation: /usr/local/pic/posts
   avatar:
     resourceLocation: /usr/local/pic/avatars/
 server:

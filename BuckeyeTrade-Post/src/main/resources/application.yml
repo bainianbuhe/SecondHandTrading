@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    url: jdbc:mysql://47.90.245.180:3306/post?serverTimezone=UTC
+    username: root
+    password: lwl213615hqy
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: org.apache.commons.dbcp2.BasicDataSource
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+mybatis:
+  mapper-locations: classpath:com/hygg/mapper/*.xml
+  type-aliases-package: com.hygg.entity
+  configuration:
+    mapUnderscoreToCamelCase: true
+fileUpload:
+  post:
+    resourceLocation: /usr/local/pic/posts/
+  avatar:
+    resourceLocation: /usr/local/pic/avatars/
+server:
+  port: 8082
+myServer:
+  address: http://47.90.245.180
+dubbo:
+  application:
+    name: post-provider
+  registry:
+    address: zookeeper://47.90.245.180:2181
+  protocol:
+    name: dubbo
+    port: 20881
+  provider:
+    timeout: 3
+    version: 0.1
+
+
