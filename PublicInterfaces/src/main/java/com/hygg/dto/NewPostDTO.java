@@ -7,7 +7,45 @@ public class NewPostDTO implements Serializable {
     private String description;
     private String contact;
     private String folderUrl;
-    private int imgNum;
+    private String imgNames;
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    private double price;
+
+    public void setImgNames(String imgNames) {
+        this.imgNames = imgNames;
+    }
+
+    public String getImgNames() {
+        return imgNames;
+    }
+
+    private Integer authorId;
+    private String tag;
+
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public void setAuthorId(Integer authorId) {
+        this.authorId = authorId;
+    }
+
+    public Integer getAuthorId() {
+        return authorId;
+    }
+
+    public String getTag() {
+        return tag;
+    }
 
     public String getItemName() {
         return itemName;
@@ -23,10 +61,6 @@ public class NewPostDTO implements Serializable {
 
     public String getFolderUrl() {
         return folderUrl;
-    }
-
-    public int getImgNum() {
-        return imgNum;
     }
 
     public void setItemName(String itemName) {
@@ -45,7 +79,4 @@ public class NewPostDTO implements Serializable {
         this.folderUrl = folderUrl;
     }
 
-    public void setImgNum(int imgNum) {
-        this.imgNum = imgNum;
-    }
 }

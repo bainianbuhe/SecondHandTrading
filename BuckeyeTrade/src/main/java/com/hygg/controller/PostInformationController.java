@@ -6,10 +6,7 @@ import com.hygg.service.PostInformationService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sun.rmi.runtime.NewThreadAction;
 
@@ -52,6 +49,15 @@ public class PostInformationController {
     public Map<String,Object> uploadPost(@RequestBody NewPostDTO newPostDTO){
         return postInformationService.uploadInformation(newPostDTO);
     }
-
-
+    @GetMapping("/get-item-vos")
+    public Map<String,Object> getItemVOs(@RequestParam(value="tag") String tag,
+                                         @RequestParam(value="pageNum") int pageNum,
+                                         @RequestParam(value="pageSize")int pageSize){
+        logger.info("received params"+tag+"and"+pageNum+"and"+pageSize);
+        return postInformationService.getItemCardVOs(tag,pageNum,pageSize);
+    }
+    @GetMapping("/get-item-detail-VO")
+    public Map<String,Object> getItemDetailVO(@RequestParam(value = "postId") int postId){
+        return postInformationService.getItemDetailVO(postId);
+    }
 }

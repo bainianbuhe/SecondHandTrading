@@ -6,4 +6,6 @@ include 'BuckeyeTrade'
 include 'BuckeyeTrade-Account'
 include 'MyBaTisGenerator'
 include 'BuckeyeTrade-Post'
+include 'fakeDataGenerator'
+include 'BuckeyeTrade-Comment'
 

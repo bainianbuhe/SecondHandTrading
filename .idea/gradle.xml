@@ -13,9 +13,11 @@
             <option value="$PROJECT_DIR$/AvatarUploadProvider" />
             <option value="$PROJECT_DIR$/BuckeyeTrade" />
             <option value="$PROJECT_DIR$/BuckeyeTrade-Account" />
+            <option value="$PROJECT_DIR$/BuckeyeTrade-Comment" />
             <option value="$PROJECT_DIR$/BuckeyeTrade-Post" />
             <option value="$PROJECT_DIR$/MyBatisGenerator" />
             <option value="$PROJECT_DIR$/PublicInterfaces" />
+            <option value="$PROJECT_DIR$/fakeDataGenerator" />
           </set>
         </option>
       </GradleProjectSettings>

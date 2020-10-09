@@ -2,6 +2,7 @@ package com.hygg.dao;
 
 import com.hygg.entity.PostInformation;
 import com.hygg.entity.PostInformationExample;
+import jdk.nashorn.internal.ir.annotations.Reference;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

@@ -10,4 +10,5 @@ public interface UserDao{
                                        @Param("userPassword") String userPassword);
     public Integer insertUser(User user);
     public User queryUserByName(String userName);
+    public User queryUserById(Integer id);
 }

@@ -16,5 +16,9 @@ values(#{userName},#{userPassword},#{collegeOrSchool},#{avatarUrl})
         select user_id  ,user_name,user_password, college_or_school, avatar_url
            from buckeyetrade_user where user_name=#{userName}
     </select>
+    <select id="queryUserById" resultType="user">
+        select user_id  ,user_name,user_password, college_or_school, avatar_url
+           from buckeyetrade_user where user_id=#{id}
+    </select>
 
 </mapper>
