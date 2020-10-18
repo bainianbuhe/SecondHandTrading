@@ -12,6 +12,15 @@ public class ItemDetailVO implements Serializable {
     private String contact;
     private String description;
     private String postTime;
+    private int authorId;
+
+    public void setAuthorId(int authorId) {
+        this.authorId = authorId;
+    }
+
+    public int getAuthorId() {
+        return authorId;
+    }
 
     public void setImgUrls(String[] imgUrls) {
         this.imgUrls = imgUrls;

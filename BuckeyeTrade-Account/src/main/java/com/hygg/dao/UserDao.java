@@ -11,4 +11,5 @@ public interface UserDao{
     public Integer insertUser(User user);
     public User queryUserByName(String userName);
     public User queryUserById(Integer id);
+    public Integer updateUser(User user);
 }

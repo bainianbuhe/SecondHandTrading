@@ -20,5 +20,10 @@ values(#{userName},#{userPassword},#{collegeOrSchool},#{avatarUrl})
         select user_id  ,user_name,user_password, college_or_school, avatar_url
            from buckeyetrade_user where user_id=#{id}
     </select>
+    <update id="updateUser" >
+update buckeyetrade_user set user_name=#{userName},user_password=#{userPassword},
+avatar_url=#{avatarUrl},college_or_school=#{collegeOrSchool}
+ where user_id =#{userId}
+    </update>
 
 </mapper>

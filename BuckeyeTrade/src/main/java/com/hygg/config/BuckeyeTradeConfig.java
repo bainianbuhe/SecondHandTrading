@@ -24,7 +24,7 @@ public class BuckeyeTradeConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(new String[]{"http://localhost:8080","http://192.168.1.238:8080"})
+                .allowedOrigins(new String[]{"*"})
                 .allowCredentials(true)
                 .allowedMethods("*")
                 .maxAge(3600);

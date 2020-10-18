@@ -2,9 +2,10 @@ dubbo:
     application:
       name: buckeyetrade-generator
     registry:
-      address: zookeeper://47.90.245.180:2181
+      address: zookeeper://47.90.249.49:2181
     consumer:
-      timeout: 3000
+      timeout: 80000
+      check: false
 server:
   port: 8079
 

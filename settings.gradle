@@ -8,4 +8,6 @@ include 'MyBaTisGenerator'
 include 'BuckeyeTrade-Post'
 include 'fakeDataGenerator'
 include 'BuckeyeTrade-Comment'
+include 'message'
+include 'BuckeyeTrade-Message'
 

@@ -14,10 +14,12 @@
             <option value="$PROJECT_DIR$/BuckeyeTrade" />
             <option value="$PROJECT_DIR$/BuckeyeTrade-Account" />
             <option value="$PROJECT_DIR$/BuckeyeTrade-Comment" />
+            <option value="$PROJECT_DIR$/BuckeyeTrade-Message" />
             <option value="$PROJECT_DIR$/BuckeyeTrade-Post" />
             <option value="$PROJECT_DIR$/MyBatisGenerator" />
             <option value="$PROJECT_DIR$/PublicInterfaces" />
             <option value="$PROJECT_DIR$/fakeDataGenerator" />
+            <option value="$PROJECT_DIR$/message" />
           </set>
         </option>
       </GradleProjectSettings>

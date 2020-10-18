@@ -6,6 +6,9 @@ import com.hygg.service.UserService;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -27,5 +30,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public User queryUserById(int id) {
         return userDao.queryUserById(id);
+    }
+
+    @Override
+    public Map<String, Object> updateUser(User user) {
+        userDao.updateUser(user);
+        return new HashMap<String,Object>(){
+            {
+                put("message","success");
+            }
+        };
     }
 }

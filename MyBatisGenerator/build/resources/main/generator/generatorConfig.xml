@@ -35,5 +35,8 @@
         <table tableName="post_information">
             <generatedKey column="post_id" sqlStatement="MySql"/>
         </table>
+        <table tableName="post_information">
+        <columnOverride column="description" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        </table>
     </context>
 </generatorConfiguration>

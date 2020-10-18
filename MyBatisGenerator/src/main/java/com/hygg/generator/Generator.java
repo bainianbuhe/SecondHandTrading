@@ -20,8 +20,9 @@ public class Generator {
         //读取我们的 MBG 配置文件
         //InputStream is = Generator.class.getResourceAsStream("/generator/generatorConfig.xml");
         //InputStream is = Generator.class.getResourceAsStream("/generator/commentConfig.xml");
-        InputStream is = Generator.class.getResourceAsStream("/generator/replyConfig.xml");
+        //InputStream is = Generator.class.getResourceAsStream("/generator/replyConfig.xml");
 
+        InputStream is = Generator.class.getResourceAsStream("/generator/messageConfig.xml");
         ConfigurationParser cp = new ConfigurationParser(warnings);
         Configuration config = cp.parseConfiguration(is);
         is.close();

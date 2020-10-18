@@ -2,6 +2,7 @@ package com.hygg.controller;
 
 import com.hygg.dto.NewPostDTO;
 import com.hygg.entity.PostInformation;
+import com.hygg.entity.User;
 import com.hygg.service.PostInformationService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
@@ -60,4 +61,27 @@ public class PostInformationController {
     public Map<String,Object> getItemDetailVO(@RequestParam(value = "postId") int postId){
         return postInformationService.getItemDetailVO(postId);
     }
-}
+    @GetMapping("/search-by-keyword")
+    public Map<String,Object> searchByKeyWord(@RequestParam(value="tag") String tag,
+                                              @RequestParam(value="pageNum") int pageNum,
+                                              @RequestParam(value="pageSize")int pageSize,
+                                              @RequestParam(value="keyword") String keyWord){
+        return postInformationService.searchByKeyWord(tag,pageNum,pageSize,keyWord);
+    }
+    @GetMapping("/sold-posts-by-id")
+    public Map<String,Object> soldPostsById(@RequestParam(value="userId") int userId,
+                                            @RequestParam(value="pageNum") int pageNum,
+                                            @RequestParam(value="pageSize") int pageSize){
+        return postInformationService.soldPostsById(pageNum, pageSize,userId);
+    }
+    @GetMapping("/unsold-posts-by-id")
+    public Map<String,Object> unsoldPostsById(@RequestParam(value="userId") int userId,
+                                              @RequestParam(value="pageNum") int pageNum,
+                                              @RequestParam(value="pageSize") int pageSize){
+        return postInformationService.unsoldPostsById(pageNum,  pageSize,userId);
+    }
+    @GetMapping("/mark-as-sold")
+    public Map<String,Object> markAsSold(@RequestParam(value="postId") int postId){
+        return postInformationService.markAsSold(postId);
+    }
+ }

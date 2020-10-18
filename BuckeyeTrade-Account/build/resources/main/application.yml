@@ -28,12 +28,17 @@ dubbo:
   application:
     name: user-provider
   registry:
-    address: zookeeper://47.90.245.180:2181
+    address: zookeeper://47.90.249.49:2181
   protocol:
     name: dubbo
     port: 20880
   provider:
-    timeout: 3
+    timeout: 3000
+    retries: 2
     version: 0.1
+    dynamic: true
+  consumer:
+    check: false
+
 
 

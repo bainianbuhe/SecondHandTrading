@@ -1,5 +1,6 @@
 package com.hygg.service.impl;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hygg.dao.PostInformationMapper;
@@ -53,14 +54,14 @@ public class PostInformationServiceImpl implements PostInformationService {
         logger.info("picnum:"+files.length);
         String[] imgNames=new String[suffixes.length];
         for(int i=0;i<files.length;i++){
-            readBin2Image(files[i],folderDir+"/"+i+suffixes[i]);
+            readBin2Image(files[i],folderDir+"/"+(i+1)+suffixes[i]);
             imgNames[i]=i+1+ suffixes[i];
         }
         String imgNamesString = StringUtils.join(imgNames, ",");
         return new HashMap<String,Object>(){
             {
                 put("result","success");
-                put("folderUrl",currentServerAddress+"/static/post-photos/"+timeStamp+"-"+id);
+                put("folderUrl",currentServerAddress+"/static/post-photos/"+timeStamp+"-"+id+"/");
                 put("imgNames", imgNamesString);
             }
         };
@@ -92,8 +93,8 @@ public class PostInformationServiceImpl implements PostInformationService {
     }
 
     @Override
-    public Map<String, Object> getPostInformation(Integer id) {
-        return null;
+    public PostInformation getPostInformation(Integer id) {
+        return postInformationMapper.selectByPrimaryKey(id);
     }
 
     @Override
@@ -115,12 +116,15 @@ public class PostInformationServiceImpl implements PostInformationService {
     public Map<String,Object> getItemCardVOs(String tag, int pageNum,int pageSize){
         PostInformationExample postInformationExample=new PostInformationExample();
         PostInformationExample.Criteria criteria=postInformationExample.createCriteria();
+        criteria.andStatusEqualTo(0);
         if(!(tag.equals("Recent posts"))) {
             criteria.andTagEqualTo(tag);
         }
         postInformationExample.setOrderByClause("post_time desc , price  desc");
-        PageHelper.startPage(pageNum,pageSize);
+        Page page=PageHelper.startPage(pageNum,pageSize);
         List<PostInformation> postInformationList= postInformationMapper.selectByExample(postInformationExample);
+        PageInfo info = new PageInfo<>(page.getResult());
+        long total=info.getTotal();
         List<ItemCardVO> itemCardVOList=new ArrayList<ItemCardVO>();
         for(int i=0;i<postInformationList.size();i++){
             ItemCardVO itemCardVO=new ItemCardVO();
@@ -143,11 +147,9 @@ public class PostInformationServiceImpl implements PostInformationService {
             itemCardVO.setPostId(postInformation.getPostId());
             itemCardVOList.add(itemCardVO);
         }
-        PageInfo pageInfo=new PageInfo(postInformationList);
-        long pageCount=pageInfo.getTotal();
         return new HashMap<String,Object>(){
             {
-                put("pageCount",pageCount);
+                put("pageCount",Math.ceil(1.0*total/pageSize));
                 put("itemCardVOs",itemCardVOList);
             }
         };
@@ -168,6 +170,7 @@ public class PostInformationServiceImpl implements PostInformationService {
         String dateTime=simpleDateFormat.format(date);
         itemDetailVO.setPostTime(dateTime);
         itemDetailVO.setDescription(postInformation.getDescription());
+        itemDetailVO.setAuthorId(authorId);
         String imgNames=postInformation.getImgNames();
         String[] imgNameArray=imgNames.split(",");
         String[] imgUrls=new String[imgNameArray.length];
@@ -185,6 +188,147 @@ public class PostInformationServiceImpl implements PostInformationService {
             }
         };
     }
+
+    @Override
+    public Map<String, Object> searchByKeyWord(String tag, int pageNum, int pageSize, String keyWord) {
+        Logger logger=LoggerFactory.getLogger(PostInformationServiceImpl.class);
+        PostInformationExample postInformationExample=new PostInformationExample();
+        PostInformationExample.Criteria criteria=postInformationExample.createCriteria();
+        postInformationExample.setOrderByClause("post_time desc , price  desc");
+        PostInformationExample.Criteria or1=postInformationExample.or();
+        or1.andItemNameLike("%"+keyWord+"%").andStatusEqualTo(0);
+        PostInformationExample.Criteria or2=postInformationExample.or();
+        or2.andDescriptionLike("%"+keyWord+"%").andStatusEqualTo(0);
+        if(!(tag.equals("Recent posts"))) {
+            or1.andTagEqualTo(tag);
+            or2.andTagEqualTo(tag);
+        }
+        logger.info("keyword"+keyWord);
+        Page page=PageHelper.startPage(pageNum,pageSize);
+        List<PostInformation> postInformationList= postInformationMapper.selectByExample(postInformationExample);
+        long total=page.getTotal();
+        List<ItemCardVO> itemCardVOList=new ArrayList<ItemCardVO>();
+        for(int i=0;i<postInformationList.size();i++){
+            ItemCardVO itemCardVO=new ItemCardVO();
+            PostInformation postInformation=postInformationList.get(i);
+            int authorId=postInformation.getAuthorId();
+            User author=userService.queryUserById(authorId);
+            itemCardVO.setAuthorAvatarUrl(author.getAvatarUrl());
+            itemCardVO.setAuthorName(author.getUserName());
+            Date date=postInformation.getPostTime();
+            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("US/Eastern"));
+            String dateTime=simpleDateFormat.format(date);
+            itemCardVO.setDate(dateTime);
+            String imgNames=postInformation.getImgNames();
+            String[] imgNameArray=imgNames.split(",");
+            itemCardVO.setImgUrl(postInformation.getFolderUrl()+imgNameArray[0]);
+            itemCardVO.setItemName(postInformation.getItemName());
+            itemCardVO.setPrice("$"+postInformation.getPrice());
+            itemCardVO.setLabel(postInformation.getTag());
+            itemCardVO.setPostId(postInformation.getPostId());
+            itemCardVOList.add(itemCardVO);
+        }
+        return new HashMap<String,Object>(){
+            {
+                put("pageCount",Math.ceil(1.0*total/pageSize));
+                put("itemCardVOs",itemCardVOList);
+            }
+        };
+    }
+
+    @Override
+    public Map<String, Object> soldPostsById(int pageNum, int pageSize,int userId) {
+        PostInformationExample postInformationExample=new PostInformationExample();
+        postInformationExample.createCriteria().andAuthorIdEqualTo(userId).andStatusEqualTo(1);
+        postInformationExample.setOrderByClause("post_time desc , price  desc");
+        Page page=PageHelper.startPage(pageNum,pageSize);
+        List<PostInformation> postInformationList= postInformationMapper.selectByExample(postInformationExample);
+        long total=page.getTotal();
+        List<ItemCardVO> itemCardVOList=new ArrayList<ItemCardVO>();
+        for(int i=0;i<postInformationList.size();i++){
+            ItemCardVO itemCardVO=new ItemCardVO();
+            PostInformation postInformation=postInformationList.get(i);
+            int authorId=postInformation.getAuthorId();
+            User author=userService.queryUserById(authorId);
+            itemCardVO.setAuthorAvatarUrl(author.getAvatarUrl());
+            itemCardVO.setAuthorName(author.getUserName());
+            Date date=postInformation.getPostTime();
+            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("US/Eastern"));
+            String dateTime=simpleDateFormat.format(date);
+            itemCardVO.setDate(dateTime);
+            String imgNames=postInformation.getImgNames();
+            String[] imgNameArray=imgNames.split(",");
+            itemCardVO.setImgUrl(postInformation.getFolderUrl()+imgNameArray[0]);
+            itemCardVO.setItemName(postInformation.getItemName());
+            itemCardVO.setPrice("$"+postInformation.getPrice());
+            itemCardVO.setLabel(postInformation.getTag());
+            itemCardVO.setPostId(postInformation.getPostId());
+            itemCardVOList.add(itemCardVO);
+        }
+        return new HashMap<String,Object>(){
+            {
+                put("message","success");
+                put("itemCardVOs",itemCardVOList);
+                put("pageCount",Math.ceil(1.0*total/pageSize));
+            }
+        };
+    }
+
+    @Override
+    public Map<String, Object> unsoldPostsById(int pageNum, int pageSize,int userId) {
+        PostInformationExample postInformationExample=new PostInformationExample();
+        postInformationExample.createCriteria().andAuthorIdEqualTo(userId).andStatusEqualTo(0);
+        postInformationExample.setOrderByClause("post_time desc , price  desc");
+        Page page=PageHelper.startPage(pageNum,pageSize);
+        List<PostInformation> postInformationList= postInformationMapper.selectByExample(postInformationExample);
+        long total=page.getTotal();
+        List<ItemCardVO> itemCardVOList=new ArrayList<ItemCardVO>();
+        for(int i=0;i<postInformationList.size();i++){
+            ItemCardVO itemCardVO=new ItemCardVO();
+            PostInformation postInformation=postInformationList.get(i);
+            int authorId=postInformation.getAuthorId();
+            User author=userService.queryUserById(authorId);
+            itemCardVO.setAuthorAvatarUrl(author.getAvatarUrl());
+            itemCardVO.setAuthorName(author.getUserName());
+            Date date=postInformation.getPostTime();
+            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("US/Eastern"));
+            String dateTime=simpleDateFormat.format(date);
+            itemCardVO.setDate(dateTime);
+            String imgNames=postInformation.getImgNames();
+            String[] imgNameArray=imgNames.split(",");
+            itemCardVO.setImgUrl(postInformation.getFolderUrl()+imgNameArray[0]);
+            itemCardVO.setItemName(postInformation.getItemName());
+            itemCardVO.setPrice("$"+postInformation.getPrice());
+            itemCardVO.setLabel(postInformation.getTag());
+            itemCardVO.setPostId(postInformation.getPostId());
+            itemCardVOList.add(itemCardVO);
+        }
+        return new HashMap<String,Object>(){
+            {
+                put("message","success");
+                put("itemCardVOs",itemCardVOList);
+                put("pageCount",Math.ceil(1.0*total/pageSize));
+            }
+        };
+    }
+
+    @Override
+    public Map<String, Object> markAsSold(int postId) {
+        PostInformationExample postInformationExample=new PostInformationExample();
+        postInformationExample.createCriteria().andPostIdEqualTo(postId);
+        PostInformation postInformation=postInformationMapper.selectByExample(postInformationExample).get(0);
+        postInformation.setStatus(1);
+        postInformationMapper.updateByExample(postInformation,postInformationExample);
+        return new HashMap<String,Object>(){
+            {
+                put("message","success");
+            }
+        };
+    }
+
 
     private static void readBin2Image(byte[] byteArray, String targetPath) {
         Logger logger= LoggerFactory.getLogger(PostInformationServiceImpl.class);

@@ -2,6 +2,7 @@ package com.hygg.controller;
 
 import com.hygg.entity.User;
 import com.hygg.service.AvatarUploadService;
+import com.hygg.service.FollowService;
 import com.hygg.service.UserService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.ibatis.annotations.Param;
@@ -85,4 +86,18 @@ public class UserController {
             };
         }
     }
+    @GetMapping("/query-user-by-id")
+    public Map<String,Object> queryUserById(@RequestParam(value = "userId")int userId){
+        return new HashMap<String,Object>() {
+            {
+                put("message", "success");
+                put("data", userService.queryUserById(userId));
+            }
+        };
+    }
+    @PostMapping("/update-user")
+    public Map<String,Object> updateUser(@RequestBody User user){
+        return userService.updateUser(user);
+    }
+
 }
