@@ -36,12 +36,10 @@ public class PostInformationController {
             }
         }
         catch (Exception e){
-            return new HashMap<String,Object>(){
-                {
-                    put("result","failure");
-                    put("message",e.toString());
-                }
-            };
+            HashMap<String,Object> result=new HashMap<>();
+            result.put("result","failure");
+            result.put("message",e.toString());
+            return result;
         }
         return postInformationService.uploadPhotos(fileBytesArrays,id,suffixes);
 
@@ -53,9 +51,10 @@ public class PostInformationController {
     @GetMapping("/get-item-vos")
     public Map<String,Object> getItemVOs(@RequestParam(value="tag") String tag,
                                          @RequestParam(value="pageNum") int pageNum,
-                                         @RequestParam(value="pageSize")int pageSize){
+                                         @RequestParam(value="pageSize")int pageSize,
+                                         @RequestParam(value="userId") int userId){
         logger.info("received params"+tag+"and"+pageNum+"and"+pageSize);
-        return postInformationService.getItemCardVOs(tag,pageNum,pageSize);
+        return postInformationService.getItemCardVOs(tag,pageNum,pageSize,userId);
     }
     @GetMapping("/get-item-detail-VO")
     public Map<String,Object> getItemDetailVO(@RequestParam(value = "postId") int postId){
@@ -65,8 +64,9 @@ public class PostInformationController {
     public Map<String,Object> searchByKeyWord(@RequestParam(value="tag") String tag,
                                               @RequestParam(value="pageNum") int pageNum,
                                               @RequestParam(value="pageSize")int pageSize,
-                                              @RequestParam(value="keyword") String keyWord){
-        return postInformationService.searchByKeyWord(tag,pageNum,pageSize,keyWord);
+                                              @RequestParam(value="keyword") String keyWord,
+                                              @RequestParam(value="userId") int userId){
+        return postInformationService.searchByKeyWord(tag,pageNum,pageSize,keyWord,userId);
     }
     @GetMapping("/sold-posts-by-id")
     public Map<String,Object> soldPostsById(@RequestParam(value="userId") int userId,

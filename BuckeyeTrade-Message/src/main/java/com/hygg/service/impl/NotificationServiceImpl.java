@@ -45,17 +45,13 @@ public class NotificationServiceImpl implements NotificationService {
         if(notification.getRecipientId()!=notification.getSenderId()){
             int result=notificationMapper.insert(notification);
             if(result>0){
-                return new HashMap<String,Object>(){
-                    {
-                        put("message","success");
-                    }
-                };
+                Map<String, Object> resultMap=new HashMap<>();
+                resultMap.put("message","success");
+                return resultMap;
             }else{
-                return new HashMap<String,Object>(){
-                    {
-                        put("message","failure");
-                    }
-                };
+                Map<String, Object> resultMap=new HashMap<>();
+                resultMap.put("message","failure");
+                return resultMap;
             }
         }
         else{
@@ -66,11 +62,9 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Map<String, Object> markAsRead(int notificationId) {
         notificationMapper.markAsRead(notificationId);
-        return new HashMap<String,Object>(){
-            {
-                put("message","success");
-            }
-        };
+        Map<String, Object> resultMap=new HashMap<>();
+        resultMap.put("message","success");
+        return resultMap;
     }
 
     @Override
@@ -132,12 +126,10 @@ public class NotificationServiceImpl implements NotificationService {
                 notificationVOList.add(notificationVO);
             }
         }
-        return new HashMap<String,Object>(){
-            {
-                put("pageCount",Math.ceil(1.0*total/pageSize));
-                put("data",notificationVOList);
-            }
-        };
+        Map<String, Object> resultMap=new HashMap<>();
+        resultMap.put("pageCount",Math.ceil(1.0*total/pageSize));
+        resultMap.put("data",notificationVOList);
+        return resultMap;
     }
 
     @Override
@@ -199,14 +191,10 @@ public class NotificationServiceImpl implements NotificationService {
                 notificationVOList.add(notificationVO);
             }
         }
-        return new HashMap<String,Object>(){
-            {
-                put("total",total);
-                put("pageCount",Math.ceil(1.0*total/pageSize));
-                put("data",notificationVOList);
-            }
-        };
+        Map<String, Object> resultMap=new HashMap<>();
+        resultMap.put("pageCount",Math.ceil(1.0*total/pageSize));
+        resultMap.put("data",notificationVOList);
+        resultMap.put("total",total);
+        return resultMap;
     }
-
-
 }

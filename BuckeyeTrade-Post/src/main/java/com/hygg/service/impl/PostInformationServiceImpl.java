@@ -8,6 +8,7 @@ import com.hygg.dto.NewPostDTO;
 import com.hygg.entity.PostInformation;
 import com.hygg.entity.PostInformationExample;
 import com.hygg.entity.User;
+import com.hygg.service.FollowService;
 import com.hygg.service.PostInformationService;
 import com.hygg.service.UserService;
 import com.hygg.vo.ItemCardVO;
@@ -28,6 +29,8 @@ import java.util.*;
 public class PostInformationServiceImpl implements PostInformationService {
     @Reference(version="0.1")
     UserService userService;
+    @Reference(version="0.1")
+    FollowService followService;
     @Autowired
     private PostInformationMapper postInformationMapper;
     Logger logger= LoggerFactory.getLogger(PostInformationServiceImpl.class);
@@ -44,12 +47,10 @@ public class PostInformationServiceImpl implements PostInformationService {
             file.mkdirs();
             }
         catch(Exception e){
-            return new HashMap<String,Object>(){
-                {
-                    put("result","failure");
-                    put("message",e.toString());
-                }
-            };
+            HashMap <String,Object> result=new HashMap<>();
+            result.put("result","failure");
+            result.put("message",e.toString());
+            return result;
             }
         logger.info("picnum:"+files.length);
         String[] imgNames=new String[suffixes.length];
@@ -58,38 +59,30 @@ public class PostInformationServiceImpl implements PostInformationService {
             imgNames[i]=i+1+ suffixes[i];
         }
         String imgNamesString = StringUtils.join(imgNames, ",");
-        return new HashMap<String,Object>(){
-            {
-                put("result","success");
-                put("folderUrl",currentServerAddress+"/static/post-photos/"+timeStamp+"-"+id+"/");
-                put("imgNames", imgNamesString);
-            }
-        };
-
+        HashMap<String,Object> result=new HashMap<>();
+        result.put("result","success");
+        result.put("folderUrl",currentServerAddress+"/static/post-photos/"+timeStamp+"-"+id+"/");
+        result.put("imgNames", imgNamesString);
+        return result;
     }
 
     @Override
     public Map<String, Object> uploadInformation( NewPostDTO newPostDTO) {
-        PostInformation postInformation=new PostInformation(){
-            {
-                setImgNames(newPostDTO.getImgNames());
-                setTag(newPostDTO.getTag());
-                setAuthorId(newPostDTO.getAuthorId());
-                setContact(newPostDTO.getContact());
-                setDescription(newPostDTO.getDescription());
-                setFolderUrl(newPostDTO.getFolderUrl());
-                setItemName(newPostDTO.getItemName());
-                setPrice(newPostDTO.getPrice());
-                setPostTime(new Date());
-                setStatus(0);
-            }
-        };
+        PostInformation postInformation=new PostInformation();
+        postInformation.setImgNames(newPostDTO.getImgNames());
+        postInformation.setTag(newPostDTO.getTag());
+        postInformation.setAuthorId(newPostDTO.getAuthorId());
+        postInformation.setContact(newPostDTO.getContact());
+        postInformation.setDescription(newPostDTO.getDescription());
+        postInformation.setFolderUrl(newPostDTO.getFolderUrl());
+        postInformation.setItemName(newPostDTO.getItemName());
+        postInformation.setPrice(newPostDTO.getPrice());
+        postInformation.setPostTime(new Date());
+        postInformation.setStatus(0);
         postInformationMapper.insert(postInformation);
-        return new HashMap<String,Object>(){
-            {
-                put("message","success");
-            }
-        };
+        HashMap<String,Object> result=new HashMap<>();
+        result.put("message","success");
+        return result;
     }
 
     @Override
@@ -113,11 +106,14 @@ public class PostInformationServiceImpl implements PostInformationService {
         return null;
     }
     @Override
-    public Map<String,Object> getItemCardVOs(String tag, int pageNum,int pageSize){
+    public Map<String,Object> getItemCardVOs(String tag, int pageNum,int pageSize,int userId){
         PostInformationExample postInformationExample=new PostInformationExample();
         PostInformationExample.Criteria criteria=postInformationExample.createCriteria();
         criteria.andStatusEqualTo(0);
-        if(!(tag.equals("Recent posts"))) {
+        if(tag.equals("following")){
+            List<Integer> followedUserIds=followService.getFollowedUserIds(userId);
+            criteria.andAuthorIdIn(followedUserIds);
+        }else if(!(tag.equals("Recent posts"))) {
             criteria.andTagEqualTo(tag);
         }
         postInformationExample.setOrderByClause("post_time desc , price  desc");
@@ -147,12 +143,10 @@ public class PostInformationServiceImpl implements PostInformationService {
             itemCardVO.setPostId(postInformation.getPostId());
             itemCardVOList.add(itemCardVO);
         }
-        return new HashMap<String,Object>(){
-            {
-                put("pageCount",Math.ceil(1.0*total/pageSize));
-                put("itemCardVOs",itemCardVOList);
-            }
-        };
+        HashMap<String,Object> result=new HashMap<>();
+        result.put("pageCount",Math.ceil(1.0*total/pageSize));
+        result.put("itemCardVOs",itemCardVOList);
+        return result;
     }
 
     @Override
@@ -181,16 +175,14 @@ public class PostInformationServiceImpl implements PostInformationService {
         itemDetailVO.setItemName(postInformation.getItemName());
         itemDetailVO.setPrice("$"+postInformation.getPrice());
         itemDetailVO.setTag(postInformation.getTag());
-        return new HashMap<String,Object>(){
-            {
-                put("message","success");
-                put("itemDetailVO",itemDetailVO);
-            }
-        };
+        HashMap<String,Object> result=new HashMap<>();
+        result.put("message","success");
+        result.put("itemDetailVO",itemDetailVO);
+        return result;
     }
 
     @Override
-    public Map<String, Object> searchByKeyWord(String tag, int pageNum, int pageSize, String keyWord) {
+    public Map<String, Object> searchByKeyWord(String tag, int pageNum, int pageSize, String keyWord,int userId) {
         Logger logger=LoggerFactory.getLogger(PostInformationServiceImpl.class);
         PostInformationExample postInformationExample=new PostInformationExample();
         PostInformationExample.Criteria criteria=postInformationExample.createCriteria();
@@ -199,7 +191,13 @@ public class PostInformationServiceImpl implements PostInformationService {
         or1.andItemNameLike("%"+keyWord+"%").andStatusEqualTo(0);
         PostInformationExample.Criteria or2=postInformationExample.or();
         or2.andDescriptionLike("%"+keyWord+"%").andStatusEqualTo(0);
-        if(!(tag.equals("Recent posts"))) {
+        List<Integer> followedUserIds=followService.getFollowedUserIds(userId);
+        logger.info("num of followed"+followedUserIds.size());
+        if(tag.equals("following")){
+            or1.andAuthorIdIn(followedUserIds);
+            or2.andAuthorIdIn(followedUserIds);
+        }
+        else if(!(tag.equals("Recent posts"))) {
             or1.andTagEqualTo(tag);
             or2.andTagEqualTo(tag);
         }
@@ -229,12 +227,10 @@ public class PostInformationServiceImpl implements PostInformationService {
             itemCardVO.setPostId(postInformation.getPostId());
             itemCardVOList.add(itemCardVO);
         }
-        return new HashMap<String,Object>(){
-            {
-                put("pageCount",Math.ceil(1.0*total/pageSize));
-                put("itemCardVOs",itemCardVOList);
-            }
-        };
+        HashMap<String,Object> result=new HashMap<>();
+        result.put("pageCount",Math.ceil(1.0*total/pageSize));
+        result.put("itemCardVOs",itemCardVOList);
+        return result;
     }
 
     @Override
@@ -267,13 +263,11 @@ public class PostInformationServiceImpl implements PostInformationService {
             itemCardVO.setPostId(postInformation.getPostId());
             itemCardVOList.add(itemCardVO);
         }
-        return new HashMap<String,Object>(){
-            {
-                put("message","success");
-                put("itemCardVOs",itemCardVOList);
-                put("pageCount",Math.ceil(1.0*total/pageSize));
-            }
-        };
+        HashMap<String,Object> result=new HashMap<>();
+        result.put("message","success");
+        result.put("itemCardVOs",itemCardVOList);
+        result.put("pageCount",Math.ceil(1.0*total/pageSize));
+        return result;
     }
 
     @Override
@@ -306,13 +300,11 @@ public class PostInformationServiceImpl implements PostInformationService {
             itemCardVO.setPostId(postInformation.getPostId());
             itemCardVOList.add(itemCardVO);
         }
-        return new HashMap<String,Object>(){
-            {
-                put("message","success");
-                put("itemCardVOs",itemCardVOList);
-                put("pageCount",Math.ceil(1.0*total/pageSize));
-            }
-        };
+        HashMap<String,Object> result=new HashMap<>();
+        result.put("message","success");
+        result.put("itemCardVOs",itemCardVOList);
+        result.put("pageCount",Math.ceil(1.0*total/pageSize));
+        return result;
     }
 
     @Override
@@ -322,11 +314,9 @@ public class PostInformationServiceImpl implements PostInformationService {
         PostInformation postInformation=postInformationMapper.selectByExample(postInformationExample).get(0);
         postInformation.setStatus(1);
         postInformationMapper.updateByExample(postInformation,postInformationExample);
-        return new HashMap<String,Object>(){
-            {
-                put("message","success");
-            }
-        };
+        HashMap<String,Object> result=new HashMap<>();
+        result.put("message","success");
+        return result;
     }
 
 

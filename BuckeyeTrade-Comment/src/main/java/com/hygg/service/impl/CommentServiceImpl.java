@@ -51,11 +51,9 @@ public class CommentServiceImpl implements CommentService {
         PostInformation postInformation=postInformationService.getPostInformation(commentDTO.getOwnerId());
         notificationDTO.setRecipientId(postInformation.getAuthorId());
         notificationService.insertNotification(notificationDTO);
-        return new HashMap<String,Object>(){
-            {
-                put("message","success");
-            }
-        };
+        Map<String, Object> result=new HashMap<>();
+        result.put("message","success");
+        return result;
     }
 
     @Override
@@ -74,11 +72,9 @@ public class CommentServiceImpl implements CommentService {
         notificationDTO.setSenderId(reply.getFromId());
         notificationDTO.setRecipientId(reply.getToId());
         notificationService.insertNotification(notificationDTO);
-        return new HashMap<String,Object>(){
-            {
-                put("message","success");
-            }
-        };
+        Map<String, Object> result=new HashMap<>();
+        result.put("message","success");
+        return result;
     }
 
     @Override
@@ -127,12 +123,10 @@ public class CommentServiceImpl implements CommentService {
             commentVO.setReply(replyVOList);
             commentVOList.add(commentVO);
         }
-        return new HashMap<String,Object>(){
-            {
-                put("message","success");
-                put("data",commentVOList);
-            }
-        };
+        Map<String, Object> result=new HashMap<>();
+        result.put("message","success");
+        result.put("data",commentVOList);
+        return result;
     }
     @Override
     public Reply getReply(int replyId){

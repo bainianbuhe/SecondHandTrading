@@ -37,6 +37,19 @@ public class FollowServiceImpl implements FollowService {
         List<Follow> followList=followMapper.selectByExample(followExample);
         return followList.size()==1;
     }
+
+    @Override
+    public List<Integer> getFollowedUserIds(int userId) {
+        List<Integer> followedUserIdS=new ArrayList<>();
+        FollowExample followExample=new FollowExample();
+        followExample.createCriteria().andFollowerIdEqualTo(userId);
+        List<Follow> follows=followMapper.selectByExample(followExample);
+        for(Follow follow:follows){
+            followedUserIdS.add(follow.getFollowedUserId());
+        }
+        return followedUserIdS;
+    }
+
     @Override
     public Map<String, Object> follow(int followerId, int followedUserId) {
         NotificationDTO notificationDTO=new NotificationDTO();
@@ -52,17 +65,13 @@ public class FollowServiceImpl implements FollowService {
         follow.setFollowerId(followerId);
         int result=followMapper.insert(follow);
         if(result>0){
-            return new HashMap<String,Object>(){
-                {
-                    put("message","success");
-                }
-            };
+            HashMap<String,Object> resultMap=new HashMap<>();
+            resultMap.put("message","success");
+            return resultMap;
         }else{
-            return new HashMap<String,Object>(){
-                {
-                    put("message","failure");
-                }
-            };
+            HashMap<String,Object> resultMap=new HashMap<>();
+            resultMap.put("message","failure");
+            return resultMap;
         }
     }
 
@@ -72,17 +81,13 @@ public class FollowServiceImpl implements FollowService {
         followExample.createCriteria().andFollowedUserIdEqualTo(followedUserId).andFollowerIdEqualTo(followerId);
         int result=followMapper.deleteByExample(followExample);
         if(result==1){
-            return new HashMap<String,Object>(){
-                {
-                    put("message","success");
-                }
-            };
+            HashMap<String,Object> resultMap=new HashMap<>();
+            resultMap.put("message","success");
+            return resultMap;
         }else{
-            return new HashMap<String,Object>(){
-                {
-                    put("message","failure");
-                }
-            };
+            HashMap<String,Object> resultMap=new HashMap<>();
+            resultMap.put("message","failure");
+            return resultMap;
         }
     }
 
@@ -110,13 +115,11 @@ public class FollowServiceImpl implements FollowService {
             followDTO.setUserName(follower.getUserName());
             followDTOList.add(followDTO);
         }
-        return new HashMap<String,Object>(){
-            {
-                put("message","success");
-                put("data",followDTOList);
-                put("pageCount",Math.ceil(1.0*total/pageSize));
-            }
-        };
+        HashMap<String,Object> resultMap=new HashMap<>();
+        resultMap.put("message","success");
+        resultMap.put("data",followDTOList);
+        resultMap.put("pageCount",Math.ceil(1.0*total/pageSize));
+        return resultMap;
     }
 
     @Override
@@ -137,13 +140,11 @@ public class FollowServiceImpl implements FollowService {
             followDTO.setUserName(followedUser.getUserName());
             followDTOList.add(followDTO);
         }
-        return new HashMap<String,Object>(){
-            {
-                put("message","success");
-                put("data",followDTOList);
-                put("pageCount",Math.ceil(1.0*total/pageSize));
-            }
-        };
+        HashMap<String,Object> resultMap=new HashMap<>();
+        resultMap.put("message","success");
+        resultMap.put("data",followDTOList);
+        resultMap.put("pageCount",Math.ceil(1.0*total/pageSize));
+        return  resultMap;
     }
 
     @Override

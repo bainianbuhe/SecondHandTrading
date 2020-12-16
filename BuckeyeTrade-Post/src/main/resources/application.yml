@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://47.90.245.180:3306/post?serverTimezone=UTC
+    url: jdbc:mysql://47.90.245.180/post?serverTimezone=UTC
     username: root
     password: lwl213615hqy
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -28,12 +28,15 @@ dubbo:
   application:
     name: post-provider
   registry:
-    address: zookeeper://47.90.249.49:2181
+    protocol: zookeeper
+    address: 47.90.249.49:2181,47.90.245.180:2181,47.90.250.152:2181
+    simplified: true
+    file: /dubbo-server/dubbo-registry-post.properties
   protocol:
     name: dubbo
     port: 20881
   provider:
-    timeout: 3000
+    timeout: 30000
     retries: 2
     version: 0.1
     dynamic: true

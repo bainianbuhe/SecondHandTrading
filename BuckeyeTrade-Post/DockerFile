@@ -17,7 +17,7 @@ ADD build/libs/BuckeyeTrade-Post-1.0-SNAPSHOT.jar BuckeyeTrade-Post.jar
 
 #启动容器时的进程
 ENTRYPOINT ["java","-jar","/BuckeyeTrade-Post.jar"]
-
+ENV LD_PRELOAD ="/usr/lib64/libtcmalloc.so.4.4.5"
 ENV DUBBO_IP_TO_REGISTRY 47.90.245.180
 ENV DUBBO_PORT_TO_REGISTRY 20881
 EXPOSE 20881

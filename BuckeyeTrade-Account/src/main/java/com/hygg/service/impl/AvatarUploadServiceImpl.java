@@ -47,12 +47,10 @@ public class AvatarUploadServiceImpl implements AvatarUploadService {
             };
         }
         String finalFileName = fileName;
-        return new HashMap<String,Object>() {
-            {
-                put("result","success");
-                put("imgUrl",currentServerAddress+"/static/avatars/"+finalFileName);
-            }
-        };
+        HashMap<String,Object> result=new HashMap<>();
+        result.put("result","success");
+        result.put("imgUrl",currentServerAddress+"/static/avatars/"+finalFileName);
+        return result;
     }
     private static void readBin2Image(byte[] byteArray, String targetPath) {
         InputStream in = new ByteArrayInputStream(byteArray);

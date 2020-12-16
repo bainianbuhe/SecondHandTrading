@@ -28,7 +28,10 @@ dubbo:
   application:
     name: user-provider
   registry:
-    address: zookeeper://47.90.249.49:2181
+    protocol: zookeeper
+    address: 47.90.249.49:2181,47.90.245.180:2181,47.90.250.152:2181
+    simplified: true
+    file: /dubbo-server/dubbo-registry-account.properties
   protocol:
     name: dubbo
     port: 20880

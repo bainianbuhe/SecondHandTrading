@@ -19,7 +19,7 @@
         </commentGenerator>
 
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://47.90.245.180:3306/message?serverTimezone=UTC"
+                        connectionURL="jdbc:mysql://47.90.250.152:3306/message?serverTimezone=UTC"
                         userId="root"
                         password="lwl213615hqy">
         </jdbcConnection>

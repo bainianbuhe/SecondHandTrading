@@ -34,66 +34,55 @@ public class UserController {
             logger.info("IOexeption");
             e.printStackTrace();
         }
-        return new HashMap<String,Object>(){{
-            put("result","failure");
-            put("message","failed to get bytes");
-        }};
+        HashMap<String,Object> result=new HashMap<>();
+        result.put("result","failure");
+        result.put("message","failed to get bytes");
+        return result;
     }
     @GetMapping("/login")
     public Map<String,Object> login(@RequestParam(value="password") String passWord, @RequestParam(value="userName") String userName){
         User queryResult= userService.login(userName,passWord);
         if(queryResult==null){
-            return new HashMap<String,Object>(){
-                {
-                    put("result","failure");
-                    put("message","no such user");
-                }
-            };
+            HashMap<String,Object> result=new HashMap<>();
+            result.put("result","failure");
+            result.put("message","no such user");
+            return result;
         }
         else{
-            return new HashMap<String,Object>(){{
-                put("result","success");
-                put("data",queryResult);
-            }
-            };
+            HashMap<String,Object> result=new HashMap<>();
+            result.put("result","success");
+            result.put("data",queryResult);
+            return result;
         }
     }
     @PostMapping("/register")
     public Map<String,Object> register(@RequestBody User user){
         if(userService.existUserName(user.getUserName())){
-            return new HashMap<String,Object>(){
-                {
-                    put("result","failure");
-                    put("message","User name already exists!");
-                }
-            };
+            HashMap<String,Object> result=new HashMap<>();
+            result.put("result","failure");
+            result.put("message","User name already exists!");
+            return result;
         }
         Integer insertResult=userService.register(user);
         if(insertResult==null){
-            return new HashMap<String,Object>(){
-                {
-                    put("result","failure");
-                    put("message","Failed to insert user");
-                }
-            };
+            HashMap<String,Object> result=new HashMap<>();
+            result.put("result","failure");
+            result.put("message","Failed to insert user");
+            return result;
         }
         else{
-            return new HashMap<String, Object>(){
-                {
-                    put("result","success");
-                    put("id",insertResult);
-                }
-            };
+            HashMap<String,Object> result=new HashMap<>();
+            result.put("result","success");
+            result.put("id",insertResult);
+            return result;
         }
     }
     @GetMapping("/query-user-by-id")
     public Map<String,Object> queryUserById(@RequestParam(value = "userId")int userId){
-        return new HashMap<String,Object>() {
-            {
-                put("message", "success");
-                put("data", userService.queryUserById(userId));
-            }
-        };
+        HashMap<String,Object> result=new HashMap<>();
+        result.put("message", "success");
+        result.put("data", userService.queryUserById(userId));
+        return result;
     }
     @PostMapping("/update-user")
     public Map<String,Object> updateUser(@RequestBody User user){
